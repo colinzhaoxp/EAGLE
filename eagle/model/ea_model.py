@@ -20,9 +20,6 @@ from .cnets import Model
 from .configs import EConfig
 
 
-
-
-
 class EaModel(nn.Module):
 
     def __init__(
