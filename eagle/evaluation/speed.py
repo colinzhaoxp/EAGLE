@@ -1,16 +1,24 @@
 import json
 from transformers import AutoTokenizer
 import numpy as np
+import argparse
 
-tokenizer=AutoTokenizer.from_pretrained("/home/lyh/weights/hf/llama2chat/13B/")
-jsonl_file = "llama-2-chat-70b-fp16-ea-in-temperature-0.0.jsonl"
-jsonl_file_base = "llama-2-chat-70b-fp16-base-in-temperature-0.0.jsonl"
+parser = argparse.ArgumentParser()
+parser.add_argument("--model-name", type=str, default="pretrain/vicuna-7b-v1.3")
+parser.add_argument("--jsonl-file", type=str, default="llama-2-chat-70b-fp16-ea-in-temperature-0.0.jsonl")
+parser.add_argument("--jsonl-file-base", type=str, default="llama-2-chat-70b-fp16-base-in-temperature-0.0.jsonl")
+args = parser.parse_args()
+
+tokenizer=AutoTokenizer.from_pretrained(args.model_name)
+jsonl_file = args.jsonl_file
+jsonl_file_base = args.jsonl_file_base
+
+
 data = []
 with open(jsonl_file, 'r', encoding='utf-8') as file:
     for line in file:
         json_obj = json.loads(line)
         data.append(json_obj)
-
 
 
 speeds=[]

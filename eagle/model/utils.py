@@ -246,7 +246,7 @@ def initialize_tree(input_ids, model, past_key_values, logits_processor):
     # Clone the output hidden states
 
     draft_tokens, retrieve_indices,tree_mask,tree_position_ids = model.ea_layer.topK_genrate(hidden_states, input_ids, model.base_model.lm_head,logits_processor)
-    return draft_tokens, retrieve_indices,tree_mask,tree_position_ids, orig, hidden_states, token
+    return draft_tokens, retrieve_indices, tree_mask, tree_position_ids, orig, hidden_states, token
 
 
 def reset_tree_mode(
@@ -315,12 +315,8 @@ def tree_decoding(
         position_ids=position_ids,
     )
 
-
     logits = tree_logits[0, retrieve_indices]
     return logits, hidden_state, outputs
-
-
-
 
 
 def evaluate_posterior(

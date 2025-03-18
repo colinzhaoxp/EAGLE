@@ -128,8 +128,6 @@ class EaModel(nn.Module):
             ea_layer_state_dict
         )
 
-
-
         if total_token==-1:
             device = model.base_model.model.layers[0].self_attn.q_proj.weight.device
             cans=[40,48,50,56,60]
@@ -151,9 +149,6 @@ class EaModel(nn.Module):
                 times.append((end_time - start_time) / x[i])
             total_token=cans[times.index(min(times))]
             model.ea_layer.total_tokens=total_token-1
-
-
-
 
         return model
 
@@ -211,8 +206,6 @@ class EaModel(nn.Module):
         input_ids = input_ids.clone()
         self.ea_layer.reset_kv()
 
-
-
         # Initialize the past key and value states
         if hasattr(self, "past_key_values"):
             past_key_values = self.past_key_values
@@ -232,7 +225,7 @@ class EaModel(nn.Module):
 
         input_len = input_ids.shape[1]
         reset_tree_mode(self)
-        draft_tokens, retrieve_indices,tree_mask,tree_position_ids, logits, hidden_state, sample_token = initialize_tree(
+        draft_tokens, retrieve_indices, tree_mask, tree_position_ids, logits, hidden_state, sample_token = initialize_tree(
             input_ids, self, past_key_values, logits_processor
         )
         new_token = 0
@@ -253,8 +246,8 @@ class EaModel(nn.Module):
             )
             #retrieve_indices=tree_buffers["retrieve_indices"]
             #logits = logits[0, retrieve_indices]
-            draft_tokens=torch.cat((draft_tokens,padding),dim=1)
-            candidates=draft_tokens[0,retrieve_indices]
+            draft_tokens = torch.cat((draft_tokens, padding),dim=1)
+            candidates = draft_tokens[0, retrieve_indices]
             best_candidate, accept_length, sample_p = evaluate_posterior(
                 logits, candidates, logits_processor
             )
@@ -318,8 +311,6 @@ class EaModel(nn.Module):
         padding = (torch.zeros(1, 1, dtype=torch.long) - 1).to(input_ids.device)
         input_ids = input_ids.clone()
         self.ea_layer.reset_kv()
-
-
 
         # Initialize the past key and value states
         if hasattr(self, "past_key_values"):
@@ -542,8 +533,6 @@ class EaModel(nn.Module):
 
             yield input_ids
 
-
-
             if is_llama3:
                 if stop_token_id in input_ids[0, input_len:].tolist():
                     break
@@ -554,6 +543,3 @@ class EaModel(nn.Module):
                 break
             if input_ids.shape[1] > max_length:
                 break
-
-
-
