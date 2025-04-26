@@ -93,7 +93,7 @@ def initialize_past_key_values(model):
         try:
             device = model.model.layers[i].self_attn.q_proj.weight.device
         except:
-            device=model.layers[i].self_attn.q_proj.weight.device
+            device = model.layers[i].self_attn.q_proj.weight.device
         devices.append(device)
     past_key_values_data_list=[]
     startnum=0
@@ -131,17 +131,17 @@ def initialize_past_key_values(model):
     # Creating a KVCache for each pair of key and value in all layers
     past_key_values = [] * config.num_hidden_layers
 
-    bias=0
-    start_data_m=devices[0].index
+    bias = 0
+    start_data_m = devices[0].index
     for i in range(config.num_hidden_layers):
-        data_m=devices[i].index
-        if data_m!=start_data_m:
+        data_m = devices[i].index
+        if data_m != start_data_m:
             bias=0
-            start_data_m=data_m
+            start_data_m = data_m
         try:
             past_key_values.append(
                 [
-                    KVCache(past_key_values_data_list[data_m-devices[0].index][2*bias + j], current_length_data[i * 2 + j])
+                    KVCache(past_key_values_data_list[data_m - devices[0].index][2 * bias + j], current_length_data[i * 2 + j])
                     for j in range(2)
                 ]
             )

@@ -1,7 +1,11 @@
 import argparse
 import copy
+from loguru import logger
+
 
 parser = argparse.ArgumentParser(description='sp')
+parser.add_argument('--model-path', type=str, default='lmsys/vicuna-7b-v1.3')
+parser.add_argument("--data-path", type=str, default='ShareGPT_V4.3_unfiltered_cleaned_split.json')
 parser.add_argument('--outdir', type=str, default='0')
 args = parser.parse_args()
 
@@ -13,9 +17,9 @@ e = 68000 - 1
 #e = 68 - 1
 #gpus = [[0],[1],[2],[3],[4],[5],[6],[7]]
 
-gpus=[[0],[1],[2],[3]]
+gpus=[[0]]
 num_p = len(gpus)
-outdir = '{}/sharegpt_{}_{}_mufp16'.format(args.outdir,s,e)
+outdir = '{}/sharegpt_{}_{}_mufp16'.format(args.outdir, s, e)
 
 
 def split_range(start, end, n, over=False):
@@ -55,9 +59,10 @@ for i in range(num_p):
     gpu_index = gpus[i]
     gpu_index_str = ' '.join(map(str, gpu_index))
     # gpu_index_str='['+gpu_index_str+']'
-    command = "python ge_data_all_vicuna.py --start={} --end={} --index={} --gpu_index {} --outdir {}".format(start, end, index,
-                                                                                                gpu_index_str, outdir)
+    command = "python ./eagle/ge_data/ge_data_all_vicuna.py --model-path={} --data-path={} --start={} --end={} --index={} --gpu_index {} --outdir {}"\
+            .format(args.model_path, args.data_path, start, end, index, gpu_index_str, outdir)
     commands.append(command)
+
 # run_command(commands[0])
 # commands=commands[:1]
 with ThreadPoolExecutor(max_workers=len(commands)) as executor:
